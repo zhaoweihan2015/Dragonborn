@@ -1,21 +1,121 @@
 <template>
-  <div id="app">
-    <input-info></input-info>
-    <result></result>
-  </div>
+    <div class="result">
+        <el-input type="textarea" autosize placeholder="请输入内容" v-model="info">
+        </el-input>
+        <el-row>
+            <el-col :span="24" class="result-show">
+                <canvas ref="canvas" :width="canvaSet.w" :height="canvaSet.h"></canvas>
+            </el-col>
+        </el-row>
+    </div>
 </template>
 
 <script>
-import InputInfo from "./components/InputInfo";
-import Result from "./components/Result";
 export default {
-  name: 'DragonBorn',
-  components:{
-    InputInfo,
-    Result
+  data() {
+    return {
+      canvaSet: {
+        w: 320,
+        h: 55,
+        fontColor: "#fff",
+        backGroundColor: "#000"
+      },
+      info: "",
+      ctx: null,
+      map: null,
+      isReady: false
+    };
+  },
+  computed: {
+    specialWordMap() {
+      return this.$store.state.specialWordMap;
+    }
+  },
+  watch: {
+    info(val) {
+      this.printWord(this.specialWord(val));
+    }
+  },
+  mounted() {
+    this.setCanvas();
+  },
+  methods: {
+    specialWord(info) {
+      this.specialWordMap.forEach(type => {
+        info = info.replace(type.reg, type.val);
+      });
+      return info;
+    },
+    imageReload() {
+      let img = new Image();
+      img.onload = () => {
+        this.map = img;
+        this.isReady = true;
+      };
+      img.src = wordMap;
+    },
+    setCanvas() {
+      let { w, h } = this.canvaSet;
+      let canvas = this.$refs.canvas;
+      this.ctx = canvas.getContext("2d");
+      this.ctx.font = "40px dragonscript";
+      this.ctx.fillRect(0, 0, w, h);
+    },
+    clear() {
+      let { w, h, backGroundColor } = this.canvaSet;
+      this.ctx.fillStyle = backGroundColor;
+      this.ctx.fillRect(0, 0, w, h);
+    },
+    printWord(val) {
+      this.clear();
+      let { w, fontColor } = this.canvaSet;
+      let maxNumber = parseInt((w - 10) / 35);
+      this.ctx.fillStyle = fontColor;
+
+      let nowValueList = [""],
+        nowLength = 0,
+        nowY = 0;
+      val.split(" ").forEach(e => {
+        if (e.length < maxNumber) {
+          console.log(e);
+          if (nowLength + e.length >= maxNumber) {
+            nowY++;
+            nowLength = 0;
+            nowValueList[nowY] = e + " ";
+          } else {
+            nowLength += e.length;
+            nowValueList[nowY] += e + " ";
+          }
+        } else {
+          nowY++;
+          nowValueList.push(e);
+        }
+      });
+      console.log(nowValueList);
+      nowValueList.forEach((e, i) => {
+        this.ctx.fillText(e, 5, 45 * (i + 1));
+      });
+    }
   }
-}
+};
 </script>
 
 <style>
+@font-face {
+  font-family: "dragonscript";
+  src: url("./assets/dragon_alphabet.ttf");
+}
+.result .result-show div {
+  display: block;
+  float: left;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+  outline: 1px solid black;
+}
+canvas {
+  border: 1px solid black;
+  font-family: dragonscript;
+}
 </style>
