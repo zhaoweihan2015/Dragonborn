@@ -1,8 +1,10 @@
 <template>
   <div class="result">
     <div class="button-set">
-      <el-button @click="controlInfo(true)">输入文本</el-button>
-      <el-button @click="controlSet(true)">设置</el-button>
+      <div :style="canvasWidth">
+        <el-button @click="controlInfo(true)">输入文本</el-button>
+        <el-button @click="controlSet(true)">设置</el-button>
+      </div>
     </div>
     <result ref="result" />
     <el-dialog title="输入文本" :visible.sync="showInfo">
@@ -30,6 +32,14 @@ export default {
     Result,
     Set
   },
+  mounted(){
+    console.log(this.canvasWidth)
+  },
+  computed: {
+    canvasWidth() {
+      return `width:${this.$store.state.canvaSet.w}px`;
+    }
+  },
   methods: {
     controlInfo(value) {
       this.showInfo = value;
@@ -51,5 +61,8 @@ export default {
 .result .button-set {
   text-align: left;
   padding: 20px 0;
+}
+.result .button-set>div{
+  margin: 0 auto;
 }
 </style>
