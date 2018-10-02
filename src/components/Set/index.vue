@@ -1,15 +1,15 @@
 <template>
-    <el-form ref="form" :model="set">
-        <el-form-item>
-            <el-input-number v-model="set.w" :min="100" label="宽度"></el-input-number>
+    <el-form class="set" ref="form" :model="set">
+        <el-form-item label="宽度：">
+            <el-input-number v-model="set.w" :min="100"></el-input-number>
         </el-form-item>
-        <el-form-item>
-            <el-input-number v-model="set.h" :min="55" label="高度"></el-input-number>
+        <el-form-item label="高度：">
+            <el-input-number v-model="set.h" :min="55"></el-input-number>
         </el-form-item>
-        <el-form-item>
+        <el-form-item label="文字颜色：">
             <el-color-picker v-model="set.fontColor"></el-color-picker>
         </el-form-item>
-        <el-form-item>
+        <el-form-item label="背景颜色：">
             <el-color-picker v-model="set.backGroundColor"></el-color-picker>
         </el-form-item>
         <el-form-item>
@@ -39,4 +39,7 @@ export default {
 </script>
 
 <style>
+.set .el-form-item__label{
+    width: 100px;
+}
 </style>
